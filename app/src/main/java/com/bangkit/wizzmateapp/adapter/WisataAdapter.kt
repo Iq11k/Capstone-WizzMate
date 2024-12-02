@@ -21,8 +21,8 @@ class WisataAdapter : PagingDataAdapter<DataItem, WisataAdapter.MyViewHolder>(DI
             binding.tvDestinationName.text = wisata.placeName
             Glide.with(itemView.context)
                 .load(wisata.imageUrl)
+                .error(R.drawable.error_image_loading)
                 .transform(RoundedCorners(16))
-                .error(R.drawable.error_image)
                 .centerCrop()
                 .into(binding.ivDestination)
             binding.apply {
