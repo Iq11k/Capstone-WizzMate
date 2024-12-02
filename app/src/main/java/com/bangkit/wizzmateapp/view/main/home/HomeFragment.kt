@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
@@ -89,7 +90,15 @@ class HomeFragment : Fragment() {
 
         storyAdapter.addLoadStateListener { loadState ->
             binding.loadingBar.visibility =
-                if (loadState.source.refresh is androidx.paging.LoadState.Loading) View.VISIBLE else View.GONE
+                if (loadState.source.refresh is androidx.paging.LoadState.Loading) {
+                    // Show loading spinner while data is being loaded
+                    binding.rvWisata.isLayoutFrozen = true // Disable scrolling
+                    View.VISIBLE
+                } else {
+                    // Hide loading spinner and enable scrolling once data is loaded
+                    binding.rvWisata.isLayoutFrozen = false // Enable scrolling
+                    View.GONE
+                }
         }
 
         binding.ivActionLogout.setOnClickListener {
