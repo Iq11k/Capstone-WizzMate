@@ -9,7 +9,7 @@ import com.bangkit.wizzmateapp.data.remote.response.DataItem
 import com.bangkit.wizzmateapp.data.remote.retrofit.ApiService
 
 class WisataRepository(private val apiService: ApiService) {
-    fun getWisata(): LiveData<PagingData<DataItem>> {
+    fun getWisata(category: String): LiveData<PagingData<DataItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 5,
@@ -17,7 +17,7 @@ class WisataRepository(private val apiService: ApiService) {
                 initialLoadSize = 5
             ),
             pagingSourceFactory = {
-                WisataPagingSource(apiService)
+                WisataPagingSource(apiService, category)
             }
         ).liveData
     }

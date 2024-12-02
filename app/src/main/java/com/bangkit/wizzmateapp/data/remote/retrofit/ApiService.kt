@@ -26,4 +26,12 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): WisataResponse
+
+    @GET("data")
+    suspend fun getDataByCategory(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("category") category: String,
+        @Query("sort") sort: String
+    ): WisataResponse
 }

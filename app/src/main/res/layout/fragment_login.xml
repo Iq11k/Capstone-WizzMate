@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_action">
 
-        <com.example.intermediatesubmission.customView.EmailInput
+        <com.bangkit.wizzmateapp.EmailInput
             android:id="@+id/ed_login_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_login_email_layout"
         app:passwordToggleEnabled="true">
 
-        <com.example.intermediatesubmission.customView.PasswordInput
+        <com.bangkit.wizzmateapp.PasswordInput
             android:id="@+id/ed_login_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

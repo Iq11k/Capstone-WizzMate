@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".view.main.MainActivity">
 
     <com.google.android.material.search.SearchBar
@@ -14,7 +15,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:iconifiedByDefault="false"
-        android:queryHint="@string/search"
+        android:hint="@string/cari_lokasi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
@@ -34,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/button_budaya"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_default"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -44,24 +45,61 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_budaya"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/budaya"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_default"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_hiburan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/recommendation"
+                android:text="@string/taman_hiburan"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_budaya"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_cagar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/recommendation"
+                android:text="@string/cagar_alam"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_hiburan"
+                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_bahari"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/bahari"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_cagar"
+                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_perbelanjaan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/pusat_perbelanjaan"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_bahari"
+                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_tempat_ibadah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/tempat_ibadah"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/button_perbelanjaan"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </HorizontalScrollView>
@@ -73,11 +111,23 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/hsv_recomendation" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_wisata"
+        app:layout_constraintEnd_toEndOf="@+id/rv_wisata"
+        app:layout_constraintStart_toStartOf="@+id/rv_wisata"
+        app:layout_constraintTop_toTopOf="@+id/rv_wisata"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/loading_maps" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header"

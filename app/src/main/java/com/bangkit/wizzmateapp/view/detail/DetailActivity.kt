@@ -60,6 +60,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
         Glide.with(this)
             .load(imageUrl)
+            .error(R.drawable.error_image_loading)
             .into(binding.ivWisata)
         binding.apply {
             tvNamaWisata.text = destinationName

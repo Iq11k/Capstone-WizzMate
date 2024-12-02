@@ -1,4 +1,4 @@
-package com.example.intermediatesubmission.customView
+package com.bangkit.wizzmateapp
 
 import android.content.Context
 import android.text.Editable

@@ -8,9 +8,9 @@ import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.databinding.ActivityAuthenticationBinding
 import com.bangkit.wizzmateapp.view.welcome.WelcomeActivity
 
+@Suppress("DEPRECATION")
 class AuthenticationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAuthenticationBinding
-    private lateinit var loginViewModel: LoginViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +29,7 @@ class AuthenticationActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(
@@ -38,7 +39,7 @@ class AuthenticationActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun switchFragment(fragment: Fragment) {
+    private fun switchFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragmentContainerView, fragment)
             .commit()

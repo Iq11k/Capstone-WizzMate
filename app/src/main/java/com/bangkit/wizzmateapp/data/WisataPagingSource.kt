@@ -6,7 +6,7 @@ import androidx.paging.PagingState
 import com.bangkit.wizzmateapp.data.remote.response.DataItem
 import com.bangkit.wizzmateapp.data.remote.retrofit.ApiService
 
-class WisataPagingSource(private val apiService: ApiService) : PagingSource<Int, DataItem>() {
+class WisataPagingSource(private val apiService: ApiService, val category: String) : PagingSource<Int, DataItem>() {
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
     }
@@ -20,7 +20,7 @@ class WisataPagingSource(private val apiService: ApiService) : PagingSource<Int,
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataItem> {
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
-            val response = apiService.getData(position, params.loadSize)
+            val response = apiService.getDataByCategory(position, params.loadSize, category, "rating")
             val responseData = response.data
             Log.d("WisataPagingSource", "Loaded data: $responseData")
 
