@@ -49,7 +49,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ed_register_name_layout">
 
-        <com.example.intermediatesubmission.customView.EmailInput
+        <com.bangkit.wizzmateapp.EmailInput
             android:id="@+id/ed_register_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -69,7 +69,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_register_email_layout"
         app:passwordToggleEnabled="true">
 
-        <com.example.intermediatesubmission.customView.PasswordInput
+        <com.bangkit.wizzmateapp.PasswordInput
             android:id="@+id/ed_register_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -89,7 +89,7 @@
         app:layout_constraintTop_toBottomOf="@+id/ed_register_password_layout"
         app:passwordToggleEnabled="true">
 
-        <com.example.intermediatesubmission.customView.PasswordInput
+        <com.bangkit.wizzmateapp.PasswordInput
             android:id="@+id/ed_register_konfirmasi_password"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
