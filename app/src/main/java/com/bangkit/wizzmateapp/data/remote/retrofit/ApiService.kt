@@ -34,4 +34,9 @@ interface ApiService {
         @Query("category") category: String,
         @Query("sort") sort: String
     ): WisataResponse
+
+    @GET("data")
+    suspend fun searchData(
+        @Query("keyword") q: String
+    ): WisataResponse
 }
