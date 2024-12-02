@@ -6,4 +6,7 @@
     </style>
 
     <style name="Theme.WizzMate" parent="Base.Theme.WizzMate" />
+    <style name="Item.Active.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/selectedItem</item>
+    </style>
 </resources>

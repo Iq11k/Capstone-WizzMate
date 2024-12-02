@@ -7,7 +7,7 @@
     <item
         android:id="@+id/nav_cost_estimator"
         android:icon="@drawable/baseline_currency_24"
-        android:title="@string/cost_estimator" />
+        android:title="@string/cost_estimator"/>
     <item
         android:id="@+id/nav_History"
         android:icon="@drawable/baseline_history_24"
