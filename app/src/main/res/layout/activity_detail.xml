@@ -13,34 +13,39 @@
         android:layout_height="350dp"
         android:scaleType="centerCrop"
         android:src="@drawable/detail"
+        android:foreground="@drawable/foreground_fade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_nama_wisata"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:text="@string/destination_name"
-        android:textSize="40sp"
-        android:textStyle="bold"
         android:textColor="@color/white"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tv_destination_location"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_destination_location"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
-        android:textSize="30sp"
+        android:drawableTint="@color/white"
         android:text="@string/destination_location"
         android:textColor="@color/white"
+        android:textSize="20sp"
         app:drawableStartCompat="@drawable/baseline_location_pin_24"
-        android:drawableTint="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/detail_wrapper"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,77 +60,90 @@
     app:layout_constraintTop_toBottomOf="@+id/iv_wisata">
 
     <!-- Moved detail_container here inside ScrollView -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/detail_container"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="180dp"
-            android:layout_height="200dp"
-            android:background="@drawable/item_wrapper_bg"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/ratting_layout"
-            android:layout_width="150dp"
-            android:layout_height="75dp"
-            android:background="@drawable/item_wrapper_bg"
-            android:gravity="center"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/category_layout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/baseline_star_outline_24" />
-
-            <TextView
-                android:id="@+id/tv_rating"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/destination_rating"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:background="@drawable/item_wrapper_bg"
+                app:cardCornerRadius="30dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/category_layout"
-            android:layout_width="150dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/item_wrapper_bg"
-            android:gravity="center"
-            android:paddingHorizontal="30dp"
-            android:paddingVertical="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ratting_layout">
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="180dp"
+                    android:layout_height="200dp" />
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:id="@+id/tv_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/destination_rating"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/ratting_layout"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/item_wrapper_bg"
+                android:gravity="center"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/category_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/baseline_star_24" />
+
+                <TextView
+                    android:id="@+id/tv_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/destination_rating"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/category_layout"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/item_wrapper_bg"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cardView"
+                app:layout_constraintTop_toBottomOf="@+id/ratting_layout">
+
+                <TextView
+                    android:id="@+id/tv_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/destination_category"
+                    android:textAlignment="center"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
             android:id="@+id/layout_description"
@@ -135,6 +153,8 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/desc_wrapper"
+            android:padding="10dp"
             app:layout_constraintBottom_toTopOf="@+id/button_estimate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

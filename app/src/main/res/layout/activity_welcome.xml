@@ -54,12 +54,12 @@
         app:icon = "@drawable/google_icon"
         app:iconTint="@null"
         app:iconGravity="textStart"
-        app:layout_constraintBottom_toTopOf="@+id/confirm_account"
+        app:layout_constraintBottom_toTopOf="@+id/tv_confirm_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/confirm_account"
+        android:id="@+id/tv_confirm_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

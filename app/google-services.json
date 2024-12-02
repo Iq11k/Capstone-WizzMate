@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "145207385445",
+    "firebase_url": "https://coba-6f8e4-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "coba-6f8e4",
+    "storage_bucket": "coba-6f8e4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145207385445:android:315463c0ee90725a4b958c",
+        "android_client_info": {
+          "package_name": "com.bangkit.wizzmateapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145207385445-qcqnbso86aaef19t694l2dgtd4etvts0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bangkit.wizzmateapp",
+            "certificate_hash": "022576abe026c8fa26e86fda125fec2a2bfc10ef"
+          }
+        },
+        {
+          "client_id": "145207385445-6iua2nbn88p4l4pjuf88s5ke9hfep36n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfx_ZoT0TLfSpmonm0VirT6iwLLW0NO6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145207385445-6iua2nbn88p4l4pjuf88s5ke9hfep36n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

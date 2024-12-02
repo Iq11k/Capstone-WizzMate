@@ -1,0 +1,14 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="40dp"
+    android:viewportWidth="40"
+    android:viewportHeight="40">
+
+    <!-- Green Circle -->
+    <path android:fillColor="#048547"
+        android:pathData="M20,37.5C29.665,37.5 37.5,29.665 37.5,20C37.5,10.335 29.665,2.5 20,2.5C10.335,2.5 2.5,10.335 2.5,20C2.5,29.665 10.335,37.5 20,37.5Z"/>
+
+    <!-- Yellow Star -->
+    <path android:fillColor="#FFCA28"
+        android:pathData="M20,9.16669L23.25,15.75L30.5,16.8334L25.25,21.9167L26.5,29.1667L20,25.75L13.5,29.1667L14.75,21.9167L9.5,16.8334L16.75,15.75L20,9.16669Z"/>
+</vector>
