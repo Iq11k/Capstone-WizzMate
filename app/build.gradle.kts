@@ -17,7 +17,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "BASE_URL", "\"https://capstone-wizz-mate.vercel.app/\"")
+        buildConfigField("String", "BASE_URL", "\"https://backend-wizzmate-145207385445.asia-southeast1.run.app/\"")
         buildConfigField("String", "AUTH_WEB_CLIENT_ID", "\"145207385445-6iua2nbn88p4l4pjuf88s5ke9hfep36n.apps.googleusercontent.com\"")
 
     }
@@ -74,6 +74,8 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-auth:21.1.1")
     implementation(libs.androidx.datastore.preferences)
+
+    implementation("com.airbnb.android:lottie:6.0.0")
 
 
 

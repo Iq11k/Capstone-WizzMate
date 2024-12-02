@@ -30,4 +30,11 @@
     <string name="destination_category">category</string>
     <string name="destination_category_label">Category :</string>
     <string name="your_journey">Your Journey</string>
+    <string name="budaya">Budaya</string>
+    <string name="taman_hiburan">Taman Hiburan</string>
+    <string name="cagar_alam">Cagar Alam</string>
+    <string name="tempat_ibadah">Tempat Ibadah</string>
+    <string name="pusat_perbelanjaan">Pusat Perbelanjaan</string>
+    <string name="bahari">Bahari</string>
+    <string name="cari_lokasi">Cari Lokasi</string>
 </resources>
