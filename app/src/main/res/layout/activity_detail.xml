@@ -10,10 +10,10 @@
     <ImageView
         android:id="@+id/iv_wisata"
         android:layout_width="0dp"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
+        android:foreground="@drawable/foreground_fade"
         android:scaleType="centerCrop"
         android:src="@drawable/detail"
-        android:foreground="@drawable/foreground_fade"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,17 +49,16 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/detail_wrapper"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:layout_marginTop="-32dp"
-    android:background="@drawable/layout_bg"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/iv_wisata">
+        android:id="@+id/detail_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="-32dp"
+        android:background="@drawable/layout_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_wisata">
 
-    <!-- Moved detail_container here inside ScrollView -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/detail_container"
             android:layout_width="0dp"
@@ -81,11 +80,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <androidx.fragment.app.FragmentContainerView
+                <com.google.android.gms.maps.MapView
                     android:id="@+id/fragment_container"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="180dp"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:contentDescription="@string/maps" />
+
+                <ImageButton
+                    android:id="@+id/button_zoom_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="bottom"
+                    android:src="@drawable/baseline_zoom_out_map_24" />
             </androidx.cardview.widget.CardView>
 
 
@@ -114,7 +123,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/destination_rating"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -146,15 +155,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ScrollView
-            android:id="@+id/layout_description"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/desc_wrapper"
-            android:padding="10dp"
             app:layout_constraintBottom_toTopOf="@+id/button_estimate"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -165,11 +171,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:justificationMode="inter_word"
-                android:text="@string/destination_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_container" />
+                android:text="@string/destination_description" />
         </ScrollView>
+
         <Button
             android:id="@+id/button_estimate"
             android:layout_width="wrap_content"
@@ -180,5 +184,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

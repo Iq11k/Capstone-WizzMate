@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
 class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -31,6 +33,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var userLocation: LatLng? = null
     private var destinationLocation: LatLng? = null
+    private var destinationLocationMarker: Marker? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -83,6 +86,14 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                 .commit()
             mapFragment.getMapAsync(this)
         }
+        binding.buttonZoomOut.setOnClickListener {
+            val bounds = LatLngBounds.builder()
+                .include(userLocation!!)
+                .include(destinationLocation!!)
+                .build()
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
+            destinationLocationMarker?.showInfoWindow()
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -124,22 +135,26 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkersToMap() {
         if (userLocation == null || destinationLocation == null) return
-        googleMap.addMarker(
-            MarkerOptions().position(destinationLocation!!).snippet(intent.getStringExtra("PLACE_NAME"))
+        destinationLocationMarker = googleMap.addMarker(
+            MarkerOptions().position(destinationLocation!!).snippet(intent.getStringExtra("CITY")).title(intent.getStringExtra("PLACE_NAME"))
         )
-
+        destinationLocationMarker?.showInfoWindow()
         val bounds = LatLngBounds.builder()
             .include(userLocation!!)
             .include(destinationLocation!!)
             .build()
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
 
+
+
         // Set the click listener for the markers
         googleMap.setOnMarkerClickListener { marker ->
-            // Zoom to the clicked marker
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.position, 15f) // Zoom level of 15
+            val offsetPosition = offsetLatLng(marker.position, -200.0) // Offset 200 meter ke bawah
+            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(offsetPosition, 15f) // Zoom level 15
             googleMap.animateCamera(cameraUpdate)
-            true // Return true to indicate that the event was handled
+
+            marker.showInfoWindow()
+            true
         }
     }
 
@@ -150,6 +165,13 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
         return bitmap
+    }
+
+    private fun offsetLatLng(original: LatLng, offsetInMeters: Double): LatLng {
+        val earthRadius = 6378137.0 // Radius bumi dalam meter
+        val latOffset = offsetInMeters / earthRadius
+        val newLatitude = original.latitude - Math.toDegrees(latOffset) // Mengurangi agar marker terlihat lebih ke atas layar
+        return LatLng(newLatitude, original.longitude)
     }
 }
 

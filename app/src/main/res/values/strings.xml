@@ -44,4 +44,6 @@
     <string name="budget">Budget Anda</string>
     <string name="jumlah_hari">0 Hari</string>
     <string name="tujuan">Tujuan Anda</string>
+    <string name="reset">reset</string>
+    <string name="maps">maps</string>
 </resources>
