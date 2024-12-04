@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.datastore.core.android)
+    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,6 +77,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
 
     implementation("com.airbnb.android:lottie:6.0.0")
+
+    implementation("com.google.firebase:firebase-database:20.5.1")
+
 
 
 

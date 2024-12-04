@@ -33,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.launch
 
 class WelcomeActivity : AppCompatActivity() {
@@ -174,7 +175,10 @@ class WelcomeActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
                     val user: FirebaseUser? = auth.currentUser
-                    updateUI(user)
+                    user?.let {
+                        saveUserToDatabase(it)
+                        updateUI(it)
+                    }
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     updateUI(null)
@@ -184,20 +188,33 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun updateUI(currentUser: FirebaseUser?) {
         if (currentUser != null) {
-            val email = currentUser.email
-            if (email != null) {
-                // Ambil nama sebelum '@'
-                val username = email.substringBefore("@")
-
-                lifecycleScope.launch {
-                    val pref = SessionPreferences.getInstance(dataStore)
-                    pref.saveusername(username)
-                }
+            val username = currentUser.displayName!!.split(" ")[0]
+            lifecycleScope.launch {
+                val pref = SessionPreferences.getInstance(dataStore)
+                pref.saveusername(username)
             }
 
             startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
             finish()
         }
+    }
+
+    private fun saveUserToDatabase(user: FirebaseUser) {
+        val database = FirebaseDatabase.getInstance()
+        val usersRef = database.getReference("users")
+
+        val userData = mapOf(
+            "email" to user.email,
+            "username" to (user.displayName ?: "Anonymous")
+        )
+
+        usersRef.child(user.uid).setValue(userData)
+            .addOnSuccessListener {
+                Log.d(TAG, "User data saved to Realtime Database")
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Failed to save user data: ", exception)
+            }
     }
 
     override fun onStart() {
