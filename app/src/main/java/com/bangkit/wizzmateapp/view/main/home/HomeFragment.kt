@@ -157,27 +157,48 @@ class HomeFragment : Fragment() {
             binding.buttonContainer.addView(button)
         }
 
-        binding.edSearchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                mainViewModel.searchWisata(query!!)
-                mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
-                    if (result != null) {
-                        wisataAdapter.submitData(lifecycle, result)
+        binding.edSearchBar.apply{
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    mainViewModel.searchWisata(query!!)
+                    mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
+                        if (result != null) {
+                            wisataAdapter.submitData(lifecycle, result)
+                        }
                     }
+                    return false
                 }
-                return false
-            }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                mainViewModel.searchWisata(newText!!)
-                mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
-                    if (result != null) {
-                        wisataAdapter.submitData(lifecycle, result)
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (newText.isNullOrEmpty()) {
+                        binding.buttonContainer.visibility = View.VISIBLE
+                        mainViewModel.wisata.observe(viewLifecycleOwner) { wisataList ->
+                            wisataAdapter.submitData(lifecycle, wisataList)
+                            binding.rvWisata.apply {
+                                layoutManager = LinearLayoutManager(requireContext())
+                                adapter = wisataAdapter
+                            }
+                        }
+                    } else {
+                        binding.buttonContainer.visibility = View.GONE
+                        mainViewModel.searchWisata(newText)
+                        mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
+                            if (result != null) {
+                                wisataAdapter.submitData(lifecycle, result)
+                            }
+                        }
                     }
+                    return false
                 }
-                return false
+            })
+            setOnQueryTextFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    binding.buttonContainer.visibility = View.GONE
+                } else {
+                    binding.buttonContainer.visibility = View.VISIBLE
+                }
             }
-        })
+        }
     }
 
     private fun setActiveButton(button: MaterialButton) {
