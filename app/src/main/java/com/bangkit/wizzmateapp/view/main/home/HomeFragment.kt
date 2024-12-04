@@ -1,15 +1,19 @@
 package com.bangkit.wizzmateapp.view.main.home
 
-import android.annotation.SuppressLint
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
@@ -43,6 +47,17 @@ class HomeFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var userLocation: String
+
+    private var activeButton: MaterialButton? = null
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                getUserLocation() // Call your function to fetch location
+            } else {
+                Toast.makeText(context, "Location permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -108,83 +123,38 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.apply {
-            val buttons = listOf(
-                buttonDefault,
-                buttonCagar,
-                buttonBudaya,
-                buttonHiburan,
-                buttonBahari,
-                buttonPerbelanjaan,
-                buttonTempatIbadah
-            )
+        val buttonData = listOf(
+            "" to R.string.recommendation,
+            "Budaya" to R.string.budaya,
+            "Taman Hiburan" to R.string.taman_hiburan,
+            "Cagar Alam" to R.string.cagar_alam,
+            "Bahari" to R.string.bahari,
+            "Pusat Perbelanjaan" to R.string.pusat_perbelanjaan,
+            "Tempat Ibadah" to R.string.tempat_ibadah
+        )
 
-            fun resetButtonStyles() {
-                buttons.forEach { button ->
-                    button.setBackgroundColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.white
-                        )
-                    )
-                    button.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
-                    button.strokeColor =
-                        ContextCompat.getColorStateList(requireContext(), R.color.grey)
-                    button.strokeWidth = 4
+        buttonData.forEachIndexed { index, (category, stringRes) ->
+            val button = MaterialButton(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginStart = 8
+                    setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+                    strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.grey)
+                    strokeWidth = 5
+                }
+                text = getString(stringRes)
+
+                if (index == 0) setActiveButton(this)
+
+                setOnClickListener {
+                    mainViewModel.setCategory(category)
+                    setActiveButton(this)
                 }
             }
-
-            fun highlightButton(selectedButton: MaterialButton) {
-                selectedButton.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.primaryColor
-                    )
-                )
-                selectedButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                selectedButton.strokeColor =
-                    ContextCompat.getColorStateList(requireContext(), R.color.primaryColor)
-            }
-
-            resetButtonStyles()
-            highlightButton(buttonDefault)
-
-            buttonDefault.setOnClickListener {
-                mainViewModel.setCategory("")
-                rvWisata.layoutManager?.scrollToPosition(0)
-                resetButtonStyles()
-                highlightButton(buttonDefault)
-            }
-            buttonCagar.setOnClickListener {
-                mainViewModel.setCategory("Cagar Alam")
-                resetButtonStyles()
-                highlightButton(buttonCagar)
-            }
-            buttonBudaya.setOnClickListener {
-                mainViewModel.setCategory("Budaya")
-                resetButtonStyles()
-                highlightButton(buttonBudaya)
-            }
-            buttonHiburan.setOnClickListener {
-                mainViewModel.setCategory("Taman Hiburan")
-                resetButtonStyles()
-                highlightButton(buttonHiburan)
-            }
-            buttonBahari.setOnClickListener {
-                mainViewModel.setCategory("Bahari")
-                resetButtonStyles()
-                highlightButton(buttonBahari)
-            }
-            buttonPerbelanjaan.setOnClickListener {
-                mainViewModel.setCategory("Pusat Perbelanjaan")
-                resetButtonStyles()
-                highlightButton(buttonPerbelanjaan)
-            }
-            buttonTempatIbadah.setOnClickListener {
-                mainViewModel.setCategory("Tempat Ibadah")
-                resetButtonStyles()
-                highlightButton(buttonTempatIbadah)
-            }
+            binding.buttonContainer.addView(button)
         }
 
         binding.edSearchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -210,18 +180,42 @@ class HomeFragment : Fragment() {
         })
     }
 
-    @SuppressLint("MissingPermission")
+    private fun setActiveButton(button: MaterialButton) {
+        activeButton?.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
+            strokeColor = ContextCompat.getColorStateList(requireContext(), R.color.grey)
+            strokeWidth = 5
+        }
+
+        button.apply {
+            setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primaryColor))
+            setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            strokeWidth = 0
+        }
+
+        activeButton = button
+    }
+
     private fun getUserLocation() {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                val latitude = location.latitude
-                val longitude = location.longitude
-                getCityName(latitude, longitude)
-            } else {
-                Toast.makeText(context, "Unable to get location", Toast.LENGTH_SHORT).show()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    val latitude = location.latitude
+                    val longitude = location.longitude
+                    getCityName(latitude, longitude)
+                } else {
+                    Toast.makeText(context, "Unable to get location", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(context, "Failed to get location", Toast.LENGTH_SHORT).show()
             }
-        }.addOnFailureListener {
-            Toast.makeText(context, "Failed to get location", Toast.LENGTH_SHORT).show()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
@@ -230,7 +224,7 @@ class HomeFragment : Fragment() {
         try {
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (addresses!!.isNotEmpty()) {
-                userLocation = addresses.get(0)?.locality ?: "Unknown city"
+                userLocation = addresses[0]?.locality ?: "Unknown city"
                 binding.tvProfileLocation.text = userLocation
             } else {
                 Toast.makeText(context, "No address found", Toast.LENGTH_SHORT).show()
