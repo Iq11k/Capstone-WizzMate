@@ -8,14 +8,18 @@
     android:background="@color/white"
     tools:context=".view.main.MainActivity">
 
-    <com.google.android.material.search.SearchBar
+    <SearchView
         android:id="@+id/ed_search_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:iconifiedByDefault="false"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:hint="@string/cari_lokasi"
+        android:iconifiedByDefault="false"
+        android:background="@drawable/item_wrapper_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/header"
@@ -74,6 +78,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_hiburan"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_bahari"
                 android:layout_width="wrap_content"
@@ -83,6 +88,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_cagar"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_perbelanjaan"
                 android:layout_width="wrap_content"
@@ -92,6 +98,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/button_bahari"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_tempat_ibadah"
                 android:layout_width="wrap_content"
@@ -156,9 +163,9 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:text="@string/user_name"
-            android:textStyle="bold"
-            android:textSize="20sp"
             android:textColor="@color/primaryColor"
+            android:textSize="20sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/tv_profile_location"
             app:layout_constraintStart_toEndOf="@+id/profile"
             app:layout_constraintTop_toTopOf="parent" />

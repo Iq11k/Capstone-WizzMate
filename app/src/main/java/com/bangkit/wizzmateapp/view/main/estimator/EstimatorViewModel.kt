@@ -12,23 +12,10 @@ class EstimatorViewModel : ViewModel() {
     private val _wisata = MutableLiveData<List<DataItem>>()
     val wisata: LiveData<List<DataItem>> = _wisata
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
     fun searchWisata(q: String) {
         viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val response = ApiConfig.getApiService().searchData(q)
-                _wisata.value = response.data
-            } catch (e: Exception) {
-                _errorMessage.value = e.message ?: "Unknown error occurred"
-            } finally {
-                _isLoading.value = false
-            }
+            val response = ApiConfig.getApiService().searchData(q)
+            _wisata.value = response.data
         }
     }
 

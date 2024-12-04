@@ -11,17 +11,26 @@ import androidx.paging.cachedIn
 import com.bangkit.wizzmateapp.data.WisataRepository
 import com.bangkit.wizzmateapp.data.local.SessionPreferences
 import com.bangkit.wizzmateapp.data.remote.response.DataItem
+import com.bangkit.wizzmateapp.data.remote.retrofit.ApiConfig
 import kotlinx.coroutines.launch
 
-class MainViewModel(wisataRepository: WisataRepository, val pref: SessionPreferences) : ViewModel() {
-    val _category = MutableLiveData<String>()
+class MainViewModel(
+    private val wisataRepository: WisataRepository,
+    private val pref: SessionPreferences
+) : ViewModel() {
+
+    private val _category = MutableLiveData<String>()
+    val category: LiveData<String> get() = _category
+
+    lateinit var searchResult: LiveData<PagingData<DataItem>>
 
     val wisata: LiveData<PagingData<DataItem>> = _category.switchMap { category ->
         wisataRepository.getWisata(category).cachedIn(viewModelScope)
     }
+
     val username: LiveData<String?> = pref.getusername().asLiveData()
 
-    fun logout(){
+    fun logout() {
         viewModelScope.launch {
             pref.logout()
         }
@@ -30,6 +39,12 @@ class MainViewModel(wisataRepository: WisataRepository, val pref: SessionPrefere
     fun setCategory(category: String) {
         if (_category.value != category) {
             _category.value = category
+        }
+    }
+
+    fun searchWisata(q: String){
+        viewModelScope.launch {
+            searchResult = wisataRepository.searchWisata(q).cachedIn(viewModelScope)
         }
     }
 }

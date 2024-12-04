@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.credentials.ClearCredentialStateRequest
@@ -77,18 +78,18 @@ class HomeFragment : Fragment() {
         }
         getUserLocation()
 
-        val storyAdapter = WisataAdapter()
+        val wisataAdapter = WisataAdapter()
 
         mainViewModel.wisata.observe(viewLifecycleOwner) {
             binding.loadingBar.visibility = View.GONE
-            storyAdapter.submitData(lifecycle, it)
+            wisataAdapter.submitData(lifecycle, it)
             binding.rvWisata.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                adapter = storyAdapter
+                adapter = wisataAdapter
             }
         }
 
-        storyAdapter.addLoadStateListener { loadState ->
+        wisataAdapter.addLoadStateListener { loadState ->
             binding.loadingBar.visibility =
                 if (loadState.source.refresh is androidx.paging.LoadState.Loading) {
                     // Show loading spinner while data is being loaded
@@ -194,6 +195,28 @@ class HomeFragment : Fragment() {
                 highlightButton(buttonTempatIbadah)
             }
         }
+
+        binding.edSearchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                mainViewModel.searchWisata(query!!)
+                mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
+                    if (result != null) {
+                        wisataAdapter.submitData(lifecycle, result)
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                mainViewModel.searchWisata(newText!!)
+                mainViewModel.searchResult.observe(viewLifecycleOwner) { result ->
+                    if (result != null) {
+                        wisataAdapter.submitData(lifecycle, result)
+                    }
+                }
+                return false
+            }
+        })
     }
 
     @SuppressLint("MissingPermission")

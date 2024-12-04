@@ -1,4 +1,4 @@
-package com.bangkit.wizzmateapp.data
+package com.bangkit.wizzmateapp.data.paging_source
 
 import android.util.Log
 import androidx.paging.PagingSource
