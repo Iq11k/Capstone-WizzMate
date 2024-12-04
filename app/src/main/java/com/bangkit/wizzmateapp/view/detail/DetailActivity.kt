@@ -1,13 +1,12 @@
 package com.bangkit.wizzmateapp.view.detail
 
-import android.annotation.SuppressLint
+import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.databinding.ActivityDetailBinding
@@ -59,10 +58,7 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         val category = intent.getStringExtra("CATEGORY")
         val description = intent.getStringExtra("DESCRIPTION")
 
-        Glide.with(this)
-            .load(imageUrl)
-            .error(R.drawable.error_image_loading)
-            .into(binding.ivWisata)
+        Glide.with(this).load(imageUrl).error(R.drawable.error_image_loading).into(binding.ivWisata)
         binding.apply {
             tvNamaWisata.text = destinationName
             tvDestinationLocation.text = city
@@ -79,22 +75,19 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         // Set up the map fragment
         if (savedInstanceState == null) {
             val mapFragment = SupportMapFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, mapFragment)
+            supportFragmentManager.beginTransaction().replace(R.id.fragment_container, mapFragment)
                 .commit()
             mapFragment.getMapAsync(this)
         }
         binding.buttonZoomOut.setOnClickListener {
-            val bounds = LatLngBounds.builder()
-                .include(userLocation!!)
-                .include(destinationLocation!!)
-                .build()
+            val bounds =
+                LatLngBounds.builder().include(userLocation!!).include(destinationLocation!!)
+                    .build()
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
             destinationLocationMarker?.showInfoWindow()
         }
     }
 
-    @SuppressLint("MissingPermission")
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         enableMyLocation()
@@ -102,53 +95,66 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         googleMap.apply {
             mapType = GoogleMap.MAP_TYPE_HYBRID
 
-            isMyLocationEnabled = true
+            if (ActivityCompat.checkSelfPermission(
+                    this@DetailActivity, Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                isMyLocationEnabled = true
+            } else {
+                // Request the missing location permission
+                requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            }
             uiSettings.isMyLocationButtonEnabled = true
         }
     }
 
     private fun enableMyLocation() {
         if (ContextCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                this, Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             fetchCurrentLocation()
         } else {
-            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
-    @SuppressLint("MissingPermission")
     private fun fetchCurrentLocation() {
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                userLocation = LatLng(location.latitude, location.longitude)
-                addMarkersToMap()
-            } else {
-                Log.e("DetailActivity", "Failed to retrieve location")
+        if (ActivityCompat.checkSelfPermission(
+                this@DetailActivity, Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    userLocation = LatLng(location.latitude, location.longitude)
+                    addMarkersToMap()
+                } else {
+                    Log.e("DetailActivity", "Failed to retrieve location")
+                }
             }
+        } else {
+            // Request the missing location permission
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 
     private fun addMarkersToMap() {
         if (userLocation == null || destinationLocation == null) return
         destinationLocationMarker = googleMap.addMarker(
-            MarkerOptions().position(destinationLocation!!).snippet(intent.getStringExtra("CITY")).title(intent.getStringExtra("PLACE_NAME"))
+            MarkerOptions().position(destinationLocation!!).snippet(intent.getStringExtra("CITY"))
+                .title(intent.getStringExtra("PLACE_NAME"))
         )
         destinationLocationMarker?.showInfoWindow()
-        val bounds = LatLngBounds.builder()
-            .include(userLocation!!)
-            .include(destinationLocation!!)
-            .build()
+        val bounds =
+            LatLngBounds.builder().include(userLocation!!).include(destinationLocation!!).build()
         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
-
 
 
         // Set the click listener for the markers
         googleMap.setOnMarkerClickListener { marker ->
-            val offsetPosition = offsetLatLng(marker.position, -200.0) // Offset 200 meter ke bawah
-            val cameraUpdate = CameraUpdateFactory.newLatLngZoom(offsetPosition, 15f) // Zoom level 15
+            val offsetPosition = offsetLatLng(marker.position) // Offset 200 meter ke bawah
+            val cameraUpdate =
+                CameraUpdateFactory.newLatLngZoom(offsetPosition, 15f) // Zoom level 15
             googleMap.animateCamera(cameraUpdate)
 
             marker.showInfoWindow()
@@ -156,19 +162,11 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    fun getBitmapFromVectorDrawable(resourceId: Int): Bitmap {
-        val drawable = ContextCompat.getDrawable(this, resourceId) ?: return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
-        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        drawable.setBounds(0, 0, canvas.width, canvas.height)
-        drawable.draw(canvas)
-        return bitmap
-    }
-
-    private fun offsetLatLng(original: LatLng, offsetInMeters: Double): LatLng {
+    private fun offsetLatLng(original: LatLng): LatLng {
         val earthRadius = 6378137.0 // Radius bumi dalam meter
-        val latOffset = offsetInMeters / earthRadius
-        val newLatitude = original.latitude - Math.toDegrees(latOffset) // Mengurangi agar marker terlihat lebih ke atas layar
+        val latOffset = -200.0 / earthRadius
+        val newLatitude =
+            original.latitude - Math.toDegrees(latOffset) // Mengurangi agar marker terlihat lebih ke atas layar
         return LatLng(newLatitude, original.longitude)
     }
 }
