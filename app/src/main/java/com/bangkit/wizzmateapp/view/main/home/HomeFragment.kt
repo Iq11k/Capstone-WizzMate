@@ -3,14 +3,11 @@ package com.bangkit.wizzmateapp.view.main.home
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.location.Geocoder
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -18,7 +15,6 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.adapter.WisataAdapter
@@ -27,10 +23,6 @@ import com.bangkit.wizzmateapp.data.local.SessionPreferences
 import com.bangkit.wizzmateapp.data.local.dataStore
 import com.bangkit.wizzmateapp.data.remote.retrofit.ApiConfig
 import com.bangkit.wizzmateapp.databinding.FragmentHomeBinding
-import com.bangkit.wizzmateapp.view.authentication.LoginViewModel
-import com.bangkit.wizzmateapp.view.authentication.LoginViewModelFactory
-import com.bangkit.wizzmateapp.view.detail.DetailActivity
-import com.bangkit.wizzmateapp.view.main.MainActivity
 import com.bangkit.wizzmateapp.view.main.MainViewModel
 import com.bangkit.wizzmateapp.view.main.MainViewModelFactory
 import com.bangkit.wizzmateapp.view.welcome.WelcomeActivity
@@ -39,7 +31,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -57,7 +48,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         pref = SessionPreferences.getInstance(requireContext().dataStore)
         repository = WisataRepository(ApiConfig.getApiService())
@@ -71,7 +62,7 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    override fun onViewCreated(view: android.view.View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mainViewModel.username.observe(viewLifecycleOwner) { username ->
             binding.tvProfileName.text = username

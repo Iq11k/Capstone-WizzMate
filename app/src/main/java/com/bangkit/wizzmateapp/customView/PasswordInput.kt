@@ -26,7 +26,7 @@ class PasswordInput @JvmOverloads constructor(
                 } else if (p0.toString().isEmpty()) {
                     textInputLayout.error = "password tidak boleh kosong"
                 } else {
-                    textInputLayout.setErrorEnabled(false)
+                    textInputLayout.isErrorEnabled = false
                     textInputLayout.error = null
                 }
 

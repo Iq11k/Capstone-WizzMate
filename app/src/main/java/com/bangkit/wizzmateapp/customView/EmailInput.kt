@@ -23,7 +23,7 @@ class EmailInput @JvmOverloads constructor(
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(p0.toString()).matches()) {
                     textInputLayout.error = "Format Email salah"
                 } else {
-                    textInputLayout.setErrorEnabled(false)
+                    textInputLayout.isErrorEnabled = false
                     textInputLayout.error = null
                 }
 

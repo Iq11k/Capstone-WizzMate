@@ -33,7 +33,7 @@ class WisataAdapter : PagingDataAdapter<DataItem, WisataAdapter.MyViewHolder>(DI
         }
     }
 
-    override fun onBindViewHolder(holder: WisataAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val wisata = getItem(position)
         holder.bind(wisata!!)
         holder.itemView.setOnClickListener {
@@ -52,7 +52,7 @@ class WisataAdapter : PagingDataAdapter<DataItem, WisataAdapter.MyViewHolder>(DI
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WisataAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding =
             DestinationItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MyViewHolder(binding)

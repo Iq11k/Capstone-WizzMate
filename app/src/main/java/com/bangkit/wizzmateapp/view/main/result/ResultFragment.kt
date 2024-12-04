@@ -7,12 +7,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.adapter.WisataAdapter
-import com.bangkit.wizzmateapp.data.remote.response.DataItem
 
 class ResultFragment : Fragment() {
 

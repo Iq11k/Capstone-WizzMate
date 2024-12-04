@@ -1,9 +1,6 @@
 package com.bangkit.wizzmateapp.data.paging_source
 
-import android.util.Log
 import androidx.paging.PagingSource
-import androidx.paging.PagingSource.LoadParams
-import androidx.paging.PagingSource.LoadResult
 import androidx.paging.PagingState
 import com.bangkit.wizzmateapp.data.remote.response.DataItem
 import com.bangkit.wizzmateapp.data.remote.retrofit.ApiService
@@ -20,7 +17,7 @@ class SearchPagingSource(private val apiService: ApiService, val query: String) 
         val page = params.key ?: 1
         return try {
             val response = apiService.searchData(query)
-            val data = response.data ?: emptyList()
+            val data = response.data
 
             LoadResult.Page(
                 data = data,

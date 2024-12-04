@@ -11,7 +11,6 @@ import androidx.paging.cachedIn
 import com.bangkit.wizzmateapp.data.WisataRepository
 import com.bangkit.wizzmateapp.data.local.SessionPreferences
 import com.bangkit.wizzmateapp.data.remote.response.DataItem
-import com.bangkit.wizzmateapp.data.remote.retrofit.ApiConfig
 import kotlinx.coroutines.launch
 
 class MainViewModel(
