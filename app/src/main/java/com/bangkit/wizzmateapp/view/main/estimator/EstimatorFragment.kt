@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import com.bangkit.wizzmateapp.databinding.FragmentEstimatorBinding
+import com.bangkit.wizzmateapp.view.main.SharedViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -25,6 +26,7 @@ class EstimatorFragment : Fragment() {
     private var searchJob: Job? = null
 
     private val viewModel: EstimatorViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -116,6 +118,18 @@ class EstimatorFragment : Fragment() {
             binding.dpHariKedua.visibility = View.GONE // Hide the DatePicker after selection
             countDay()
         }
+
+        val budget = binding.edBudget.text.toString()
+        val titikAwal = binding.edTitikAwal.text.toString()
+        val tujuan = binding.edTujuan.text.toString()
+        val duration = countDay()
+
+        binding.buttonEstimate.setOnClickListener {
+            sharedViewModel.setBudget(budget.toDouble())
+            sharedViewModel.setDuration(duration.toInt())
+        }
+
+
     }
 
     private fun setupDropdownMenu(options: List<String>, editText: AutoCompleteTextView) {
@@ -128,7 +142,7 @@ class EstimatorFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun countDay(){
+    private fun countDay() : Long{
         val startDate = LocalDate.of(
             binding.dpHariPertama.year,
             binding.dpHariPertama.month + 1,
@@ -141,11 +155,14 @@ class EstimatorFragment : Fragment() {
             binding.dpHariKedua.dayOfMonth
         )
 
-        val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
+        var daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
         if (daysBetween >= 0){
             binding.tvJumlahHari.text = "$daysBetween Hari"
+            return daysBetween
         } else {
             binding.tvJumlahHari.text = "Not A Valid Day's Count"
+            daysBetween = 0
+            return daysBetween
         }
     }
 }

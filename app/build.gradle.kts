@@ -41,6 +41,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        mlModelBinding = true
     }
 }
 
@@ -61,6 +62,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.firebase.database.ktx)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
