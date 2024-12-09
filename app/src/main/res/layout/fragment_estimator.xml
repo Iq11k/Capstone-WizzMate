@@ -41,14 +41,15 @@
         android:background="@drawable/layout_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_background">
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_titik_awal_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:hint="@string/titik_awal"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopEnd="10dp"
@@ -61,7 +62,9 @@
                 android:id="@+id/ed_titik_awal"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
-                android:padding="16dp"/>
+                android:inputType="none"
+                android:text="@string/titik_awal"
+                android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -84,7 +87,7 @@
                 android:id="@+id/ed_budget"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="number"/>
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -130,9 +133,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ed_tujuan_layout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/tujuan"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
@@ -148,6 +151,8 @@
                 android:id="@+id/ed_tujuan"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
+                android:inputType="none"
+                android:text="@string/tujuan"
                 android:padding="16dp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -167,8 +172,8 @@
             android:id="@+id/dp_hari_pertama"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:background="@drawable/item_wrapper_bg"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -178,14 +183,13 @@
             android:id="@+id/dp_hari_kedua"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:background="@color/white"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

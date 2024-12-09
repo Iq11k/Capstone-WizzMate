@@ -1,10 +1,14 @@
 package com.bangkit.wizzmateapp.view.main.estimator
 
+import ResultFragment
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +17,21 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.databinding.FragmentEstimatorBinding
+import com.bangkit.wizzmateapp.ml.CfModel
 import com.bangkit.wizzmateapp.view.main.SharedViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.tensorflow.lite.DataType
+import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+import java.util.Calendar
 
 class EstimatorFragment : Fragment() {
     private lateinit var binding: FragmentEstimatorBinding
@@ -40,64 +52,6 @@ class EstimatorFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.wisata.observe(viewLifecycleOwner) { dataItems ->
-            val options = mutableSetOf<String>()
-            dataItems.forEach {
-                options.add(it.placeName)
-                options.add(it.city)
-            }
-            setupDropdownMenu(options.toList(), binding.edTitikAwal)
-            setupDropdownMenu(options.toList(), binding.edTujuan)
-        }
-
-        binding.edTitikAwal.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                s?.let { query ->
-                    searchJob?.cancel()
-                    searchJob = lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            viewModel.searchWisata(query.toString())
-                        }
-                    }
-                }
-            }
-
-            override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
-                query?.let {
-                    searchJob?.cancel()
-                    searchJob = lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            viewModel.searchWisata(query.toString())
-                        }
-                    }
-                }
-            }
-        })
-        binding.edTujuan.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                s?.let { query ->
-                    searchJob?.cancel()
-                    searchJob = lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            viewModel.searchWisata(query.toString())
-                        }
-                    }
-                }
-            }
-
-            override fun onTextChanged(query: CharSequence?, start: Int, before: Int, count: Int) {
-                query?.let {
-                    searchJob?.cancel() // Cancel the previous job
-                    searchJob = lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            viewModel.searchWisata(query.toString())
-                        }
-                    }
-                }
-            }
-        })
 
         binding.buttonHariAwal.setOnClickListener {
             binding.dpHariPertama.visibility = View.VISIBLE
@@ -119,26 +73,34 @@ class EstimatorFragment : Fragment() {
             countDay()
         }
 
-        val budget = binding.edBudget.text.toString()
-        val titikAwal = binding.edTitikAwal.text.toString()
-        val tujuan = binding.edTujuan.text.toString()
-        val duration = countDay()
+        val departure = resources.getStringArray(R.array.departure)
+        val adapter = ArrayAdapter(requireContext(), R.layout.drop_down_item, departure)
+        binding.edTitikAwal.setAdapter(adapter)
 
-        binding.buttonEstimate.setOnClickListener {
-            sharedViewModel.setBudget(budget.toDouble())
-            sharedViewModel.setDuration(duration.toInt())
+        val kotaTujuan = resources.getStringArray(R.array.kota_tujuan)
+        val adapter2 = ArrayAdapter(requireContext(), R.layout.drop_down_item, kotaTujuan)
+        binding.edTujuan.setAdapter(adapter2)
+
+        binding.buttonEstimate.setOnClickListener{
+            if (binding.buttonHariAwal.text != getString(R.string.hari_pertama) && binding.buttonHariAkhir.text != getString(R.string.hari_terakhir)
+                && binding.edTitikAwal.text.isNotEmpty() && binding.edTujuan.text.isNotEmpty() && binding.edBudget.text!!.isNotEmpty()){
+                val bundle = Bundle()
+                bundle.putString("estimate_result", "Your estimate is ready!") // Replace with real result
+                bundle.putLong("days_between", countDay())
+
+                val resultFragment = ResultFragment()
+                resultFragment.arguments = bundle
+                activity?.findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.GONE
+                // Navigate to the ResultFragment
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, resultFragment) // Replace with your fragment container ID
+                    .addToBackStack(null) // Add to backstack for proper navigation
+                    .commit()
+            } else {
+                Toast.makeText(context, "Fill All the Input Needed", Toast.LENGTH_SHORT).show()
+            }
         }
 
-
-    }
-
-    private fun setupDropdownMenu(options: List<String>, editText: AutoCompleteTextView) {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, options)
-        editText.setAdapter(adapter)
-        editText.setOnItemClickListener { parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position) as String
-            Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -154,15 +116,63 @@ class EstimatorFragment : Fragment() {
             binding.dpHariKedua.month + 1,
             binding.dpHariKedua.dayOfMonth
         )
+        var daysBetween: Long = 0
 
-        var daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
-        if (daysBetween >= 0){
-            binding.tvJumlahHari.text = "$daysBetween Hari"
-            return daysBetween
+        if (isDateInFuture(binding.dpHariKedua.year, binding.dpHariKedua.month, binding.dpHariKedua.dayOfMonth) && isDateInFuture(binding.dpHariPertama.year, binding.dpHariPertama.month, binding.dpHariPertama.dayOfMonth)){
+            daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
+            if (daysBetween >= 0){
+                binding.tvJumlahHari.text = "$daysBetween Hari"
+            } else {
+                binding.tvJumlahHari.text = "Not A Valid Day's Count"
+                daysBetween = 0
+            }
+            binding.buttonHariAkhir.apply {
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.primaryColor))
+                strokeColor = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.primaryColor)
+                )
+            }
+            binding.buttonHariAwal.apply {
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.primaryColor))
+                strokeColor = ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), R.color.primaryColor)
+                )
+            }
         } else {
-            binding.tvJumlahHari.text = "Not A Valid Day's Count"
-            daysBetween = 0
-            return daysBetween
+            if (!isDateInFuture(binding.dpHariKedua.year, binding.dpHariKedua.month, binding.dpHariKedua.dayOfMonth)){
+                binding.buttonHariAkhir.apply {
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                    strokeColor = ColorStateList.valueOf(
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                    )
+                }
+            } else if (!isDateInFuture(binding.dpHariPertama.year, binding.dpHariPertama.month, binding.dpHariPertama.dayOfMonth)){
+                binding.buttonHariAwal.apply {
+                    setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+                    strokeColor = ColorStateList.valueOf(
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                    )
+                }
+            }
+            Toast.makeText(context, "Tanggal Tidak Valid", Toast.LENGTH_SHORT).show()
         }
+        return daysBetween
+    }
+
+    fun isDateInFuture(year: Int, month: Int, day: Int): Boolean {
+        // Mendapatkan instance Calendar untuk hari ini
+        val today = Calendar.getInstance()
+        today.set(Calendar.HOUR_OF_DAY, 0)
+        today.set(Calendar.MINUTE, 0)
+        today.set(Calendar.SECOND, 0)
+        today.set(Calendar.MILLISECOND, 0)
+
+        // Membuat instance Calendar untuk tanggal yang dipilih
+        val selectedDate = Calendar.getInstance()
+        selectedDate.set(year, month, day, 0, 0, 0)
+        selectedDate.set(Calendar.MILLISECOND, 0)
+
+        // Membandingkan tanggal
+        return selectedDate.timeInMillis >= today.timeInMillis
     }
 }

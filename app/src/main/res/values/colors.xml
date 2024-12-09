@@ -5,4 +5,5 @@
     <color name="primaryColor">#048547</color>
     <color name="selectedItem">#046F3B</color>
     <color name="grey">#B5B5B5</color>
+    <color name="red">#FF0000</color>
 </resources>

@@ -52,4 +52,9 @@ class ResultFragment : Fragment() {
         saveButton.setOnClickListener {
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.VISIBLE
+    }
 }

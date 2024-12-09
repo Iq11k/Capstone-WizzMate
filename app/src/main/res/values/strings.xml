@@ -47,4 +47,26 @@
     <string name="reset">reset</string>
     <string name="maps">maps</string>
     <string name="comming_soon">This Feature is Comming Up Soon</string>
+    <string-array name="departure">
+        <item>Jakarta</item>
+        <item>Yogyakarta</item>
+        <item>Semarang</item>
+        <item>Surabaya</item>
+        <item>Singapore</item>
+        <item>Palembang</item>
+        <item>Balikpapan</item>
+        <item>Merauke</item>
+        <item>Jakarta (Halim Perdanakusuma)</item>
+        <item>Banjarmasin</item>
+        <item>Jayapura</item>
+        <item>Denpasar</item>
+        <item>Makassar</item>
+    </string-array>
+    <string-array name="kota_tujuan">
+        <item>Jakarta</item>
+        <item>Yogyakarta</item>
+        <item>Semarang</item>
+        <item>Surabaya</item>
+        <item>Bandung</item>
+    </string-array>
 </resources>
