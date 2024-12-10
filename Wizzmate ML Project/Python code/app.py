@@ -11,9 +11,9 @@ import googlemaps
 app = Flask(__name__)
 
 # Load dataset
-rating = pd.read_csv('../data/rating_clean.csv')
-flights_data = pd.read_csv('../data/flightsCapstone_cleaned.csv')
-merge_data=  pd.read_csv('../data/merge_data.csv')
+rating = pd.read_csv('../Data/rating_clean.csv')
+flights_data = pd.read_csv('../Data/flightsCapstone_cleaned.csv')
+merge_data=  pd.read_csv('../Data/merge_data.csv')
 
 def filter_places(city=None, categories=None):
     """
@@ -108,7 +108,7 @@ cf_model.compile(optimizer='adam', loss='mean_squared_error')
 
 # Always load or train the model
 def load_or_train_cf_model():
-    model_path = '../model/cf_model.h5'
+    model_path = '../Model/cf_model.h5'
     
     try:
         # Try loading the pre-trained model
