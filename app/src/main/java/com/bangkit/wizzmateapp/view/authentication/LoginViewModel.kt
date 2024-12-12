@@ -30,9 +30,9 @@ class LoginViewModel(private val pref: SessionPreferences) : ViewModel() {
                     _isLogin.value = true
                     _responseBody.value= response.body()
                     viewModelScope.launch {
+                        pref.saveusername(responseBody.user.username)
                         pref.saveToken(responseBody.user.id)
                         pref.saveLoginStatus(true)
-                        pref.saveusername(responseBody.user.username)
                     }
                 } else {
                     _isLogin.value = false
