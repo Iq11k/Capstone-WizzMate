@@ -16,10 +16,10 @@
     <string name="search">Hint</string>
     <string name="recommendation">Recommendation</string>
     <string name="estimate_cost">Estimate Your Cost</string>
-    <string name="user_name">Nama User</string>
+    <string name="user_name">Username</string>
     <string name="user_location">User Location</string>
-    <string name="destination_name">nama wisata</string>
-    <string name="destination_location">lokasi</string>
+    <string name="destination_name">destination name</string>
+    <string name="destination_location">Location</string>
     <string name="remember_me">Remember me</string>
     <string name="sign_in_your_account">Sign in to Your Account</string>
     <string name="dont_have_account">Don’t have an account? Sign Up</string>
@@ -36,17 +36,23 @@
     <string name="tempat_ibadah">Tempat Ibadah</string>
     <string name="pusat_perbelanjaan">Pusat Perbelanjaan</string>
     <string name="bahari">Bahari</string>
-    <string name="cari_lokasi">Cari Lokasi</string>
+    <string name="cari_lokasi">Find Location</string>
     <string name="cost_estimator_recomendation"><![CDATA[Cost Estimator & Recomendation]]></string>
-    <string name="titik_awal">Titik Awal</string>
-    <string name="hari_pertama">Hari Pertama</string>
-    <string name="hari_terakhir">Hari Terakhir</string>
-    <string name="budget">Budget Anda</string>
-    <string name="jumlah_hari">0 Hari</string>
-    <string name="tujuan">Tujuan Anda</string>
+    <string name="titik_awal">Departure</string>
+    <string name="hari_pertama">First Day</string>
+    <string name="hari_terakhir">Last Day</string>
+    <string name="budget">Your Budget</string>
+    <string name="jumlah_hari">0 Day</string>
+    <string name="tujuan">Your Destination</string>
     <string name="reset">reset</string>
     <string name="maps">maps</string>
     <string name="comming_soon">This Feature is Comming Up Soon</string>
+    <string name="result_title">Recommendation Result</string>
+    <string name="rekomendasi_tempat_terdekat">Destination Recommendation</string>
+    <string name="kemungkinan_total_budget">Budget Estimated</string>
+    <string name="duration">Duration</string>
+    <string name="flight_recommendation">Flight Recommendation</string>
+    <string name="no_flight_recommendation">No Flight Recommendation</string>
     <string-array name="departure">
         <item>Jakarta</item>
         <item>Yogyakarta</item>
