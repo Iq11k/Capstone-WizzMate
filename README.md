@@ -21,8 +21,23 @@
 * **Backend:** Firebase Realtime Database, Node.Js
 * **Other:** Google Maps API
 
-## Getting Started
+## How to Clone Our Project
 
-1. **Clone the repository:**
+1. **Clone the repository For Mobile Dev:**
    ```bash
-   git clone [https://github.com/Iq11k/Capstone-WizzMate]
+   git clone https://github.com/Iq11k/Capstone-WizzMate
+   ```
+
+2. **Clone the repository For Cloud Computing API:**
+    ```bash
+    git clone -b CC https://github.com/Iq11k/Capstone-WizzMate
+    ```
+
+3. **Clone the repository for Machine Learning Model:**
+    ```bash
+    git clone -b ML https://github.com/Iq11k/Capstone-WizzMate
+    ```
+
+## Download Link
+### Download our apps [Here](https://drive.google.com/file/d/1VzqvTgbxI2HkPA0fww4otlSHAc74GEc4/view?usp=sharing)
+
