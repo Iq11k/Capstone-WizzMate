@@ -63,8 +63,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:inputType="none"
-                android:text="@string/titik_awal"
-                android:padding="16dp" />
+                android:padding="16dp"
+                android:text="@string/titik_awal" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -152,8 +152,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:inputType="none"
-                android:text="@string/tujuan"
-                android:padding="16dp" />
+                android:padding="16dp"
+                android:text="@string/tujuan" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -183,13 +183,22 @@
             android:id="@+id/dp_hari_kedua"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@drawable/item_wrapper_bg"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
