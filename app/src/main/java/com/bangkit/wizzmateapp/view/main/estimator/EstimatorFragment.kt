@@ -1,6 +1,7 @@
 package com.bangkit.wizzmateapp.view.main.estimator
 
 import ResultFragment
+import ResultViewModel
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -18,11 +19,17 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bangkit.wizzmateapp.R
+import com.bangkit.wizzmateapp.data.remote.request.ModelRequest
+import com.bangkit.wizzmateapp.data.remote.retrofit.MLApiConfig
+import com.bangkit.wizzmateapp.data.remote.retrofit.MLApiService
 import com.bangkit.wizzmateapp.databinding.FragmentEstimatorBinding
 import com.bangkit.wizzmateapp.ml.CfModel
 import com.bangkit.wizzmateapp.view.main.SharedViewModel
+import com.bangkit.wizzmateapp.view.main.result.ResultViewModelFactory
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.tensorflow.lite.DataType
@@ -35,10 +42,11 @@ import java.util.Calendar
 
 class EstimatorFragment : Fragment() {
     private lateinit var binding: FragmentEstimatorBinding
-    private var searchJob: Job? = null
 
     private val viewModel: EstimatorViewModel by viewModels()
-    private val sharedViewModel: SharedViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
+    private lateinit var resultViewModel: ResultViewModel
+    private lateinit var apiService: MLApiService
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +54,11 @@ class EstimatorFragment : Fragment() {
     ): View {
         binding = FragmentEstimatorBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        apiService = MLApiConfig.getApiService()
+        resultViewModel = ViewModelProvider(
+            requireActivity(),
+            ResultViewModelFactory(apiService)
+        )[ResultViewModel::class.java]
         return root
     }
 
@@ -81,30 +94,73 @@ class EstimatorFragment : Fragment() {
         val adapter2 = ArrayAdapter(requireContext(), R.layout.drop_down_item, kotaTujuan)
         binding.edTujuan.setAdapter(adapter2)
 
-        binding.buttonEstimate.setOnClickListener{
-            if (binding.buttonHariAwal.text != getString(R.string.hari_pertama) && binding.buttonHariAkhir.text != getString(R.string.hari_terakhir)
-                && binding.edTitikAwal.text.isNotEmpty() && binding.edTujuan.text.isNotEmpty() && binding.edBudget.text!!.isNotEmpty()){
-                val bundle = Bundle()
-                bundle.putString("estimate_result", "Your estimate is ready!") // Replace with real result
-                bundle.putLong("days_between", countDay())
+        binding.buttonEstimate.setOnClickListener {
+            if (binding.buttonHariAwal.text != getString(R.string.hari_pertama) &&
+                binding.buttonHariAkhir.text != getString(R.string.hari_terakhir) &&
+                binding.edTitikAwal.text.isNotEmpty() &&
+                binding.edTujuan.text.isNotEmpty() &&
+                binding.edBudget.text!!.isNotEmpty()
+            ) {
+                sharedViewModel.apply {
+                    setBudget(binding.edBudget.text.toString().toDouble())
+                    setCity(binding.edTujuan.text.toString())
+                    setDeparture(binding.edTitikAwal.text.toString())
+                    setDuration(countDay())
+                    setLatitude(binding.edTujuan.text.toString())
+                    setLongitude(binding.edTujuan.text.toString())
+                }
+
+                val airports = listOf(
+                    Triple("Jakarta", -6.125567, 106.655897),
+                    Triple("Yogyakarta", -7.900211, 110.053325),
+                    Triple("Semarang", -6.970570, 110.375807),
+                    Triple("Surabaya", -7.379831, 112.787750),
+                    Triple("Bandung", -6.900343, 107.575845)
+                )
 
                 val resultFragment = ResultFragment()
-                resultFragment.arguments = bundle
-                activity?.findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.GONE
-                // Navigate to the ResultFragment
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, resultFragment) // Replace with your fragment container ID
-                    .addToBackStack(null) // Add to backstack for proper navigation
-                    .commit()
+                val userId = 1
+                val departureCity = binding.edTitikAwal.text.toString()
+                val userCity = binding.edTujuan.text.toString()
+                val userLat = airports.find { it.first == userCity }?.second
+                val userLng = airports.find { it.first == userCity }?.third
+                val days = countDay().toInt()
+                val budget = binding.edBudget.text.toString().toInt()
+
+                val modelRequest = ModelRequest(
+                    user_id=userId,
+                    user_lat=userLat!!,
+                    user_lng=userLng!!,
+                    user_city=userCity,
+                    days=days,
+                    time=8,
+                    budget=budget,
+                    departure_city = departureCity,
+                    destination_city=userCity
+                )
+                resultViewModel.fetchRecommendation(modelRequest)
+                resultViewModel.loadingState.observe(viewLifecycleOwner){
+                    if (it){
+                        binding.progressBar.visibility = View.VISIBLE
+                    }else{
+                        activity?.findViewById<View>(R.id.bottom_navigation_view)?.visibility = View.GONE
+
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, resultFragment)
+                            .addToBackStack(null)
+                            .commit()
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+
             } else {
                 Toast.makeText(context, "Fill All the Input Needed", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun countDay() : Long{
+    private fun countDay(): Long {
         val startDate = LocalDate.of(
             binding.dpHariPertama.year,
             binding.dpHariPertama.month + 1,
@@ -118,9 +174,18 @@ class EstimatorFragment : Fragment() {
         )
         var daysBetween: Long = 0
 
-        if (isDateInFuture(binding.dpHariKedua.year, binding.dpHariKedua.month, binding.dpHariKedua.dayOfMonth) && isDateInFuture(binding.dpHariPertama.year, binding.dpHariPertama.month, binding.dpHariPertama.dayOfMonth)){
+        if (isDateInFuture(
+                binding.dpHariKedua.year,
+                binding.dpHariKedua.month,
+                binding.dpHariKedua.dayOfMonth
+            ) && isDateInFuture(
+                binding.dpHariPertama.year,
+                binding.dpHariPertama.month,
+                binding.dpHariPertama.dayOfMonth
+            )
+        ) {
             daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
-            if (daysBetween >= 0){
+            if (daysBetween >= 0) {
                 binding.tvJumlahHari.text = "$daysBetween Hari"
             } else {
                 binding.tvJumlahHari.text = "Not A Valid Day's Count"
@@ -139,14 +204,24 @@ class EstimatorFragment : Fragment() {
                 )
             }
         } else {
-            if (!isDateInFuture(binding.dpHariKedua.year, binding.dpHariKedua.month, binding.dpHariKedua.dayOfMonth)){
+            if (!isDateInFuture(
+                    binding.dpHariKedua.year,
+                    binding.dpHariKedua.month,
+                    binding.dpHariKedua.dayOfMonth
+                )
+            ) {
                 binding.buttonHariAkhir.apply {
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
                     strokeColor = ColorStateList.valueOf(
                         ContextCompat.getColor(requireContext(), R.color.red)
                     )
                 }
-            } else if (!isDateInFuture(binding.dpHariPertama.year, binding.dpHariPertama.month, binding.dpHariPertama.dayOfMonth)){
+            } else if (!isDateInFuture(
+                    binding.dpHariPertama.year,
+                    binding.dpHariPertama.month,
+                    binding.dpHariPertama.dayOfMonth
+                )
+            ) {
                 binding.buttonHariAwal.apply {
                     setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
                     strokeColor = ColorStateList.valueOf(

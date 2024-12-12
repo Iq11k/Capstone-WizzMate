@@ -12,11 +12,6 @@ class EstimatorViewModel : ViewModel() {
     private val _wisata = MutableLiveData<List<DataItem>>()
     val wisata: LiveData<List<DataItem>> = _wisata
 
-    fun searchWisata(q: String) {
-        viewModelScope.launch {
-            val response = ApiConfig.getApiService().searchData(q)
-            _wisata.value = response.data
-        }
-    }
+
 
 }

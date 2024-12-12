@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface MLApiService {
     @POST("recommend")
-    fun register(
+    fun recomend(
         @Body request: ModelRequest
     ): Call<RecommendationResponse>
 }
