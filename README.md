@@ -25,4 +25,4 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/your-username/WIZZMAte.git](https://github.com/your-username/WIZZMAte.git)
+   git clone [https://github.com/Iq11k/Capstone-WizzMate]
