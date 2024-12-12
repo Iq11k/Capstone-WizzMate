@@ -1,6 +1,7 @@
 package com.bangkit.wizzmateapp.view.detail
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bangkit.wizzmateapp.R
 import com.bangkit.wizzmateapp.databinding.ActivityDetailBinding
+import com.bangkit.wizzmateapp.view.main.MainActivity
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -85,6 +87,12 @@ class DetailActivity : AppCompatActivity(), OnMapReadyCallback {
                     .build()
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100))
             destinationLocationMarker?.showInfoWindow()
+        }
+
+        binding.buttonEstimate.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+                .putExtra("Estimate", true)
+            startActivity(intent)
         }
     }
 
